@@ -1,0 +1,13 @@
+spring:
+  thymeleaf:
+    cache: true
+  rabbitmq:
+    host: 192.168.1.112
+    port: 5672
+    username: root
+    password: 123456
+    listener:
+      simple:
+        prefetch: 1 #设置成1后会查看那个消费者处于空闲状态就交给谁处理
+
+

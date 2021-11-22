@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thymeleaf的入门</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<!--输出hello数据-->
+<!--/*@thymesVar id="hello" type="ch"*/-->
+<p th:text="${hello}"></p>
+
+<table>
+    <tr>
+        <td>下标</td>
+        <td>编号</td>
+        <td>姓名</td>
+        <td>住址</td>
+    </tr>
+    <tr th:each="user,userStat:${users}">
+        <td>
+            下标:<span th:text="${userStat.index}"></span>,
+        </td>
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.address}"></td>
+    </tr>
+</table>
+
+<div th:each="map,mapStat:${dataMap}">
+    <div th:text="${map}"></div>
+    key:<span th:text="${mapStat.current.key}"></span><br/>
+    value:<span th:text="${mapStat.current.value}"></span><br/>
+    ==============================================
+</div>
+
+<div th:each="nm,nmStat:${names}">
+
+    <span th:text="${nmStat.count}"></span>
+    <span th:text="${nm}"></span>
+    ==============================================
+</div>
+
+<div>
+    <h1>Date输出 th:text</h1>
+    <span th:text="${#dates.format(now,'yyyy-MM-dd hh:ss:mm')}"></span>
+</div>
+
+<div>
+    <h1>条件判断 th:if</h1>
+    <span th:if="${(age>=18)}">终于长大了！</span>
+</div>
+
+<button onclick="abc()">aaaaaaa</button>
+
+<a th:class="|${class1}${class2}|">测试拼接</a>
+</body>
+<script th:inline="javascript">
+    var hhh=[[${hello}]];
+    function abc(){
+        alert(hhh);
+    }
+
+</script>
+</html>

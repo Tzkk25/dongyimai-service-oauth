@@ -1,0 +1,18 @@
+ server:
+  port: 9006
+spring:
+  application:
+    name: dym-sms
+  rabbitmq:
+    host: 192.168.1.112
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        prefetch: 1 #设置成1后会查看那个消费者处于空闲状态就交给谁处理
+sms:
+  appcode: 287b119571334992bec5b25303cc1f3b
+  smsSignId: 2e65b1bb3d054466b82f0c9d125465e2
+  templateId: 908e94ccf08b4476ba6c876d13f084ad #TP1711063
+

@@ -1,0 +1,52 @@
+server:
+  port: 8001
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+spring:
+  application:
+    name: gateway-web
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]': #匹配所有请求
+            allowedOrigins: "*" #跨域处理允许所有的域
+            allowedMethods: #支持的方法
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      routes:
+        #      - id: goods-route
+        #        uri: lb://dym-sellergoods
+        #        predicates:
+        #        - Host=cloud.ujiuye.com**  # cloud.ujiuye.com:8001/brand  http://localhost:9001/brand
+        #        filters:
+        #          - StripPrefix=1
+        #          - RewritePath=/api/(?<segment>.*),/$\{segment}
+        - id: dongyimai_user_route
+          uri: lb://dym-user
+          predicates:
+            - Path=/api/user/**,/api/address/**,/api/areas/**,/api/cities/**,/api/provinces/**
+          filters:
+            - StripPrefix=1  # localhost:8001/api/user/xxxx
+
+        - id: dongyimai_goods_route
+          uri: lb://dym-sellergoods
+          predicates:
+            - Path=/api/brand/**,/api/goods/**
+          filters:
+            - StripPrefix=1  # localhost:8001/api/user/xxxx
+
+        #购物车微服务路由
+        - id: dongyimai_order_route
+          uri: lb://dym-order
+          predicates:
+            - Path=/api/cart/**,/api/order/**,/api/orderItem/**
+          filters:
+            - StripPrefix=1
+
+gateway:
+  ignoreUrls: /api/user/login,/api/user/add,/api/user/sendCode

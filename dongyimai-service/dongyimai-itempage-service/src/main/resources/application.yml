@@ -1,0 +1,29 @@
+server:
+  port: 9102
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    prefer-ip-address: true
+#超时配置
+ribbon:
+  ReadTimeout: 9000
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connect-timeout: 20000
+        read-timeout: 20000
+spring:
+  thymeleaf:
+    cache: false
+  application:
+    name: dym-itempage
+  main:
+    allow-bean-definition-overriding: true
+
+# 生成静态页的位置
+pagepath: F:\\goods_static
