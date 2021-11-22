@@ -20,18 +20,18 @@ eureka:
 #    host: 192.168.1.112
 #    port: 16379
 #
-#encrypt:
-#  key-store:
-#    location: classpath:dongyimai.jks  #秘钥文件名
-#    alias: dongyimai  #别名
-#    password: dongyimai  #密码
-#    secret: dongyimai   #密钥库的访问密码
-#auth:
-#  ttl: 3600  #token过期时间
-#  clientId: admin  #客户端id
-#  clientSecret: admin #客户端密码
-#  cookieDomain: localhost #cookie域名
-#  cookieMaxAge: -1     #cookie有效期
+encrypt:
+  key-store:
+    location: classpath:dongyimai.jks  #秘钥文件名
+    alias: dongyimai  #别名
+    password: dongyimai  #密码
+    secret: dongyimai   #密钥库的访问密码
+auth:
+  ttl: 3600  #token过期时间
+  clientId: admin  #客户端id
+  clientSecret: admin #客户端密码
+  cookieDomain: localhost #cookie域名
+  cookieMaxAge: -1     #cookie有效期
 ## 开启Feign的熔断功能
 #feign:
 #  hystrix:

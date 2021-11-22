@@ -26,8 +26,14 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.offcn</groupId>
+            <artifactId>dongyimai-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
-<!--        <dependency>-->
+        <!--        <dependency>-->
 <!--            <groupId>com.offcn</groupId>-->
 <!--            <artifactId>dongyimai-common</artifactId>-->
 <!--            <version>0.0.1-SNAPSHOT</version>-->

@@ -1,6 +1,8 @@
 package com.offcn.uauth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.bootstrap.encrypt.KeyProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,10 +14,47 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+
+import javax.annotation.Resource;
+import java.security.KeyPair;
 
 @Configuration
 @EnableAuthorizationServer //����OAuth2��Ȩ������
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+
+    //创建证书读取工具类
+    @Bean(name = "keyProp")
+    public KeyProperties keyProperties(){
+        return new KeyProperties();
+    }
+
+    //引用证书读取工具类，根据对象名引用避免引用其他的对象失败
+    @Resource(name = "keyProp")
+    private KeyProperties keyProperties;
+
+    //读取证书方法
+    private KeyPair keyPair(){
+        return
+                new KeyStoreKeyFactory(
+                        keyProperties.getKeyStore().getLocation(),
+                        keyProperties.getKeyStore().getSecret().toCharArray()
+                )
+                        .getKeyPair(
+                                keyProperties.getKeyStore().getAlias(),
+                                keyProperties.getKeyStore().getSecret().toCharArray()
+                        );
+    }
+
+    //创建JwtAccessTokenConverter用来生成JWT令牌
+    private JwtAccessTokenConverter jwtAccessTokenConverter(){
+        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
+        //关联秘钥对
+        jwtAccessTokenConverter.setKeyPair(keyPair());
+        return jwtAccessTokenConverter;
+    }
 
     //ע�����������
     @Autowired
@@ -53,13 +92,22 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     }
 
-    //�˵����ƴ洢��ʽ�������Զ�����֤������֤������
-    @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(new InMemoryTokenStore()) //���ƴ洢���ڴ�
-                  .authenticationManager(authenticationManager)//��֤������
-                  .userDetailsService(userDetailsService)//�Զ�����֤��
-                  .allowedTokenEndpointRequestMethods(HttpMethod.GET,HttpMethod.POST);//����˵���ʷ���
+//    //�˵����ƴ洢��ʽ�������Զ�����֤������֤������
+//    @Override
+//    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+//        endpoints.tokenStore(new InMemoryTokenStore()) //���ƴ洢���ڴ�
+//                  .authenticationManager(authenticationManager)//��֤������
+//                  .userDetailsService(userDetailsService)//�Զ�����֤��
+//                  .allowedTokenEndpointRequestMethods(HttpMethod.GET,HttpMethod.POST);//����˵���ʷ���
+//
+//    }
+@Override
+public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    endpoints.tokenStore(new JwtTokenStore(jwtAccessTokenConverter())) //令牌格式jwt
+            .accessTokenConverter(jwtAccessTokenConverter())
+            .authenticationManager(authenticationManager)
+            .userDetailsService(userDetailsService)
+            .allowedTokenEndpointRequestMethods(HttpMethod.GET,HttpMethod.POST);
 
-    }
+}
 }
